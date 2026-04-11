@@ -5,6 +5,7 @@ from processors.summarize import summarize_text
 from processors.expand_prompt import expand_prompt
 from processors.prompt_optimizer import optimize_prompt
 from processors.quick_fix import quick_fix
+from processors.humanize import humanize_text
 
 TOOLS = {
     "rewrite": rewrite_text,
@@ -12,4 +13,5 @@ TOOLS = {
     "expand_prompt": expand_prompt,
     "optimize_prompt": optimize_prompt,
     "quick_fix": quick_fix,
+    "humanize": humanize_text,
 }

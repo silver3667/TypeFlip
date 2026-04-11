@@ -132,3 +132,8 @@ def convert_auto(text: str) -> str:
     if ratio >= 0.5:
         return convert_hebrew_to_english(text)
     return convert_english_to_hebrew(text)
+
+
+def is_hebrew(text: str) -> bool:
+    """Return True if the text is predominantly Hebrew letters (>= 50%)."""
+    return _hebrew_ratio(text) >= 0.5
