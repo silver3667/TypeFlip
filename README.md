@@ -15,60 +15,78 @@ English-only AI sugar on top. Hebrew input is intentionally skipped for those
 tools so you never end up with a surprise English translation of your Hebrew
 text.
 
+## Setup (Windows)
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/silverdeath366/hebrew-english-fix.git
+cd hebrew-english-fix/typing-assistant
+pip install -r requirements.txt
+```
+
+### 2. Set your OpenAI key (optional — only needed for AI features)
+
+Open a terminal **as administrator** and run:
+
+```bash
+setx OPENAI_API_KEY "your_key_here"
+```
+
+This sets it permanently. Restart your terminal for it to take effect.
+
+### 3. Run it
+
+**Right-click** `typing-assistant\run_daemon.bat` → **Run as administrator**.
+
+> **Why admin?** The `keyboard` library needs admin privileges on Windows to
+> capture global hotkeys. Without it, hotkeys won't work.
+
+### 4. Use it
+
+1. Type or select some text in any app
+2. **Select the text** (`Ctrl+A` or drag to highlight)
+3. Press the hotkey (see table below)
+4. The text is replaced in place
+
+### 5. Auto-start on login (optional)
+
+1. Press `Win+R`, type `shell:startup`, press Enter.
+2. Right-click inside that folder → **New → Shortcut**.
+3. Point the shortcut at `typing-assistant\run_daemon.bat`.
+4. Right-click the new shortcut → **Properties** → **Advanced** → check **Run as administrator** → OK.
+5. Done. It will start silently (with an admin prompt) every time you log in.
+
+## Hotkeys
+
+Select text first, then press:
+
+| Shortcut      | Action                                          |
+|---------------|-------------------------------------------------|
+| `Shift+F1`    | Fix keyboard layout (Hebrew ↔ English)          |
+| `Shift+F2`    | Fix spelling / grammar (Hebrew and English)     |
+| `Shift+F3`    | Rewrite text more professionally *(EN only)*    |
+| `Shift+F4`    | Summarize text *(EN only)*                      |
+| `Shift+F5`    | Optimize text as an AI prompt *(EN only)*       |
+| `Shift+F6`    | Expand idea into a full AI prompt *(EN only)*   |
+| `Shift+F7`    | Humanize AI-sounding text *(EN only)*           |
+
+*(EN only)* = English only. If you trigger these on Hebrew text, the daemon
+skips it and leaves your text alone.
+
 ## What's in the repo
 
-There are three independent daemons you can run. Pick whichever fits your
-workflow — they don't need to run together.
+There are three independent daemons. Pick whichever fits your workflow — they
+don't need to run together.
 
-| Folder | Hotkey | Uses clipboard | AI | Best for |
-|---|---|---|---|---|
-| `layout_fix/` (root)     | `Ctrl+Alt+T`      | Yes (Select All → Copy → Paste) | No | Fixing a whole field at once |
-| `layout-fix-daemon/`     | `Ctrl+;`          | No (rolling keystroke buffer) | No | Fixing just what you typed |
-| `typing-assistant/`      | `Ctrl+;` and more | No | Yes (OpenAI) | Full experience: layout + spelling + prompt helpers |
+| Folder | Uses clipboard | AI | Best for |
+|---|---|---|---|
+| `layout_fix/` (root)     | Yes (Select All → Copy → Paste) | No | Fixing a whole field at once |
+| `layout-fix-daemon/`     | No (rolling keystroke buffer) | No | Fixing just what you typed |
+| `typing-assistant/`      | Yes (select → hotkey → replaced) | Yes (OpenAI) | Full experience: layout + spelling + AI tools |
 
 `typing-assistant/` is the main one. The other two are simpler, dependency-light
 alternatives if you just want layout conversion and nothing else.
-
-## Quick start (typing-assistant)
-
-```bash
-cd typing-assistant
-pip install -r requirements.txt
-set OPENAI_API_KEY=your_key_here   # optional; only needed for the AI features
-python run_daemon.py
-```
-
-On Windows you can also just double-click `typing-assistant\run_daemon.bat`,
-which launches the daemon with `pythonw` so there is no console window.
-
-### Hotkeys (typing-assistant)
-
-| Shortcut             | Action                                               |
-|----------------------|------------------------------------------------------|
-| `Ctrl + ;`           | Fix keyboard layout (Hebrew ↔ English)               |
-| `Ctrl + Shift + ;`   | Fix spelling / grammar (Hebrew and English)          |
-| `Ctrl + Alt + ;`     | Fix layout, then fix typos                           |
-| `Ctrl + .`           | Quick fix = layout + typos in one go                 |
-| `Ctrl + Enter`       | Optimize the last sentence as an AI prompt *(EN)*    |
-| `Alt + Enter`        | Rewrite the last sentence more clearly *(EN)*        |
-| `Ctrl + /`           | Summarize the last sentence *(EN)*                   |
-| `Ctrl + Shift+Enter` | Expand the last idea into a full AI prompt *(EN)*    |
-
-*(EN)* = English only. If you trigger these on Hebrew text, the daemon prints
-`skipped: Hebrew not supported` and leaves your text alone.
-
-## Always on at login (Windows)
-
-No registry edits, no admin rights, no Task Scheduler — just the normal
-Windows user Startup folder:
-
-1. Press `Win + R`, type `shell:startup`, press Enter.
-2. Right-click inside that folder → **New → Shortcut**.
-3. Point the shortcut at `typing-assistant\run_daemon.bat` (or whichever of
-   the three daemons you picked).
-4. Done. It will start silently every time you log in.
-
-To remove it, delete the shortcut from that folder.
 
 ## Spelling fix — how it stays in the right language
 
@@ -90,9 +108,10 @@ Example:
 
 - Python 3.11+
 - Windows 10/11 or Linux (graphical session, not SSH)
-- Dependencies: `pynput`, `keyboard`, `pyperclip`, `openai`, `pytest`
+- **Administrator privileges** (required for global hotkey capture)
+- Dependencies: `keyboard`, `pynput`, `pyperclip`, `openai`
 - `OPENAI_API_KEY` environment variable — only needed for the AI-powered tools
-  (spelling fix, rewrite, summarize, expand, optimize)
+  (spelling fix, rewrite, summarize, expand, optimize, humanize)
 
 ## Run the tests
 
@@ -115,11 +134,11 @@ pytest typing-assistant/tests/ -v
 - The typing-assistant buffer keeps the last 200 characters in memory only,
   and is wiped when the daemon exits. It is never written to disk.
 - The AI features only run when you press the matching hotkey, and they only
-  send the **last sentence** — not the whole buffer — to OpenAI.
+  send the **selected text** to OpenAI.
 - The daemon does not modify any system settings, registry entries, startup
   entries, or permissions. Autostart is opt-in via a shortcut you place
   yourself.
 
 ## License
 
-MIT.
+MIT. See [LICENSE](LICENSE).
