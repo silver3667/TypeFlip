@@ -139,6 +139,25 @@ pytest typing-assistant/tests/ -v
   entries, or permissions. Autostart is opt-in via a shortcut you place
   yourself.
 
+## Troubleshooting
+
+### Numbers turn into symbols (!@#$%…) and scrolling stops working
+
+This means the Shift key is being captured globally. It was caused by an old
+bug where hotkeys were registered with `suppress=True`. This was fixed in
+commit `00ff08f`.
+
+**If it happens to you:**
+
+1. Open Task Manager and kill all `pythonw.exe` / `python.exe` processes
+   running the daemon.
+2. Make sure you have the latest code (`git pull`).
+3. Restart the daemon: double-click `typing-assistant\run_daemon.bat`.
+
+**For developers:** never set `suppress=True` on `keyboard.add_hotkey()` for
+hotkeys that use a modifier key (Shift, Ctrl, Alt). The `keyboard` library
+will swallow that modifier globally, breaking normal typing.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

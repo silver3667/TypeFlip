@@ -24,6 +24,8 @@ def register_hotkeys(
     - Shift + F6  -> on_expand_prompt (expand into AI prompt)
     - Shift + F7  -> on_humanize (humanize AI text)
     """
+    # WARNING: suppress must be False. Setting it to True will steal the Shift
+    # key system-wide, breaking number keys (1→!, 2→@, …), scrolling, and more.
     keyboard.add_hotkey('shift+f1', on_layout, suppress=False)
     keyboard.add_hotkey('shift+f2', on_typo, suppress=False)
     keyboard.add_hotkey('shift+f3', on_rewrite, suppress=False)
