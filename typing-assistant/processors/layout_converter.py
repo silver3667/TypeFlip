@@ -87,7 +87,7 @@ HEBREW_TO_ENGLISH["׳"] = ";"
 
 # Hebrew letters (Unicode range for Hebrew plus punctuation)
 HEBREW_LETTERS = set(
-    "אבגדהוזחטסעפצקרשת"
+    "אבגדהוזחטיכלמנסעפצקרשת"
     "ךםןףץ"
     "׳"
 )
