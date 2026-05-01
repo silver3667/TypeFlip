@@ -141,6 +141,35 @@ pytest typing-assistant/tests/ -v
 
 ## Troubleshooting
 
+### Pressing a hotkey pastes the result **twice**
+
+This almost always means **two daemons are running** — both register the same
+hotkey, both respond, both paste. The daemon will refuse to start a second
+instance and print `ANOTHER DAEMON IS ALREADY RUNNING`, but a leftover
+`pythonw.exe` from a previous logon session can slip past that check when the
+new daemon is started without administrator privileges.
+
+**Find the running daemons:**
+
+```powershell
+Get-CimInstance Win32_Process -Filter "Name='python.exe' OR Name='pythonw.exe'" |
+  Select-Object ProcessId, Name, CommandLine, CreationDate
+```
+
+**Kill the old one (replace `<PID>` with the older `pythonw.exe`):**
+
+```powershell
+taskkill /PID <PID> /F
+```
+
+Then start the daemon as administrator (right-click `run_daemon.bat` → **Run
+as administrator**) so the singleton lock is machine-wide and zombies can't
+hide from it.
+
+The daemon also writes a log to `~/.typing-assistant/daemon.log` — open it to
+see whether the duplicate paste came from one daemon firing twice (look at
+call IDs) or from two daemons each handling the same press.
+
 ### Numbers turn into symbols (!@#$%…) and scrolling stops working
 
 This means the Shift key is being captured globally. It was caused by an old
