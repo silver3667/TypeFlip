@@ -5,23 +5,38 @@ from openai import OpenAI
 from config.settings import OPENAI_API_KEY, PROMPT_MODEL, OPENAI_TIMEOUT
 from processors.layout_converter import is_hebrew
 
-_ENGLISH_PROMPT = """You improve prompts for AI systems.
+_ENGLISH_PROMPT = """Rewrite the user's text below into a sharp, well-structured prompt for an AI assistant.
 
-Rewrite the following text to be a clear, well-structured prompt for an AI assistant.
-Do not add explanations.
-Return only the improved prompt.
+The improved prompt MUST specify:
+- Role: who the AI should act as (if relevant)
+- Task: the concrete deliverable, in one clear sentence
+- Constraints: length, audience, tone, what to avoid
+- Format: how the output should be structured (bullets, sections, code, etc.)
 
-Text:
+Rules for your reply:
+- Output ONLY the improved prompt itself. No preamble ("Here is...", "Certainly!"), no postamble, no meta-commentary, no markdown fences, no quotation marks around the prompt.
+- Do not invent facts the user didn't give. If something is unspecified (e.g. audience), make a reasonable default and bake it into the prompt — don't ask the user.
+- Keep it tight. Aim for 4-10 lines.
+
+User's text:
 {text}
 """
 
-_HEBREW_PROMPT = """אתה משפר פרומפטים עבור מערכות AI.
+_HEBREW_PROMPT = """כתוב מחדש את הטקסט של המשתמש לפרומפט חד ומובנה עבור עוזר AI.
 
-כתוב מחדש את הטקסט הבא כך שיהיה פרומפט ברור ומובנה עבור עוזר AI.
-אל תוסיף הסברים. אל תתרגם לאנגלית.
-החזר רק את הפרומפט המשופר.
+הפרומפט המשופר חייב לכלול:
+- תפקיד: מי ה-AI צריך לגלם (אם רלוונטי)
+- משימה: התוצר הקונקרטי, במשפט ברור אחד
+- אילוצים: אורך, קהל יעד, טון, מה להימנע ממנו
+- פורמט: איך התשובה צריכה להיות מובנית (נקודות, סעיפים, קוד וכו')
 
-טקסט:
+כללים לתשובה שלך:
+- החזר רק את הפרומפט המשופר עצמו. ללא הקדמה ("הנה...", "בוודאי!"), ללא סיום, ללא הערות מטא, ללא בלוקי קוד, ללא מירכאות סביב הפרומפט.
+- אל תמציא עובדות שהמשתמש לא נתן. אם משהו לא צוין (למשל קהל), קבע ברירת מחדל סבירה והכנס אותה לפרומפט — אל תשאל את המשתמש.
+- שמור על תמציתיות. שאף ל-4 עד 10 שורות.
+- אל תתרגם לאנגלית. כתוב בעברית.
+
+הטקסט של המשתמש:
 {text}
 """
 
