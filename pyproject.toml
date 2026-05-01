@@ -34,4 +34,13 @@ dev = [
 
 [build-system]
 requires = ["setuptools>=68.0"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+# Two folders ship a package literally named "layout_fix". With pytest's default
+# import mode their modules collide in sys.modules when both test dirs are
+# collected in one run. importlib mode isolates them.
+addopts = "--import-mode=importlib"
+# typing-assistant tests need OPENAI_API_KEY and a different rootdir;
+# run them explicitly via `pytest typing-assistant/tests/` instead.
+testpaths = ["tests", "layout-fix-daemon/tests"]
