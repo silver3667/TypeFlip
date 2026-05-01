@@ -141,6 +141,24 @@ pytest typing-assistant/tests/ -v
 
 ## Troubleshooting
 
+### Hotkeys don't work inside terminals (Windows Terminal, PowerShell, cmd, Claude Code, etc.)
+
+**This is expected.** The daemon grabs your selection by sending `Ctrl+C`, but
+in a terminal `Ctrl+C` means "cancel the running command" (SIGINT), not
+"copy". So Shift+F1/F2/etc. fired inside a terminal will either interrupt
+whatever's running, copy nothing, or copy a stale clipboard value — none of
+which is what you want.
+
+**The daemon is built for editable text in real apps:** Notepad, Word,
+browsers, Slack, Discord, VS Code's editor pane, Outlook, anywhere with a
+real text field. If you need to fix something you typed in a terminal, paste
+it into Notepad first, run the hotkey there, then copy the result back.
+
+*PRs welcome:* a clean fix would be to detect a terminal/console window via
+`GetClassNameW` on the foreground window and either fall back to
+`Ctrl+Shift+C` or refuse the hotkey with a clear log message instead of
+silently misbehaving.
+
 ### Pressing a hotkey pastes the result **twice**
 
 This almost always means **two daemons are running** — both register the same
