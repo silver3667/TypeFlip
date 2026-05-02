@@ -20,8 +20,8 @@ text.
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/silverdeath366/hebrew-english-fix.git
-cd hebrew-english-fix/typing-assistant
+git clone https://github.com/silver3667/TypeFlip.git
+cd TypeFlip/typing-assistant
 pip install -r requirements.txt
 ```
 
